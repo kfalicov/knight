@@ -1,0 +1,19 @@
+{
+  "name": "template",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "start": "parcel ./index.html --no-cache",
+    "build": "parcel build ./index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "kfalicov",
+  "license": "ISC",
+  "dependencies": {
+    "phaser": "^3.50.0"
+  },
+  "devDependencies": {
+    "parcel": "^2.0.0-nightly.500"
+  }
+}
