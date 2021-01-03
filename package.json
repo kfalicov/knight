@@ -1,9 +1,10 @@
 {
-  "name": "template",
+  "name": "knight",
   "version": "0.0.0",
   "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "parcel ./index.html --no-cache",
+    "start": "parcel ./index.html",
     "build": "parcel build ./index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,7 +12,8 @@
   "author": "kfalicov",
   "license": "ISC",
   "dependencies": {
-    "phaser": "^3.50.0"
+    "phaser": "^3.50.1",
+    "three": "^0.124.0"
   },
   "devDependencies": {
     "parcel": "^2.0.0-nightly.500"

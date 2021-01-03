@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { Game } from "./scenes/game";
 
 import { Loader } from "./scenes/loader";
 import { Menu } from "./scenes/menu";
@@ -23,7 +24,7 @@ const config = {
     },
   },
   /** the available scenes for this game */
-  scene: [Loader, Menu],
+  scene: [Loader, Menu, Game],
 };
 
 window.addEventListener(

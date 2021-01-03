@@ -13,6 +13,6 @@ export class Loader extends Phaser.Scene {
   }
   create() {
     //start the next scene in the scene list (found in main.js's config object) after preloading is completed
-    this.scene.manager.scenes[1].scene.start();
+    this.scene.manager.switch("Loader", "Game");
   }
 }
