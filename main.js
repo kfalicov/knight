@@ -6,7 +6,7 @@ import { Menu } from "./scenes/menu";
 
 const config = {
   type: Phaser.WEBGL,
-  parent: "gamewrapper",
+  canvas:document.getElementById('game'),
   width: 320,
   height: 240,
   scale: {

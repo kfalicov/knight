@@ -1,9 +1,9 @@
 import * as THREE from "three";
 
-import gradientMap from "url:../assets/red herring.png";
-import brick from "url:../assets/red herring.png";
-import brick_normal from "url:../assets/red herring.png";
-import brick_ao from "url:../assets/red herring.png";
+import gradientMap from "url:../assets/gradientMap.png";
+import brick from "url:../assets/brick.png";
+import brick_normal from "url:../assets/brick_normal.png";
+import brick_ao from "url:../assets/brick_ao.png";
 
 export class Game extends Phaser.Scene {
   constructor() {
