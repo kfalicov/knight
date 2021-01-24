@@ -1,98 +1,76 @@
-import * as THREE from "three";
-
-import gradientMap from "url:../assets/gradientMap.png";
-import brick from "url:../assets/brick.png";
-import brick_normal from "url:../assets/brick_normal.png";
-import brick_ao from "url:../assets/brick_ao.png";
-
 export class Game extends Phaser.Scene {
   constructor() {
     super("Game");
   }
   preload() {}
   create() {
-    this.cameras.main.setBackgroundColor("#bb0000");
+    this.add.image(160, 120, "background").setScale(0.75);
 
-    const { width, height } = this.sys.canvas;
-    let depth = 1725 * (height / 240);
+    let knight = this.physics.add.sprite(120, 205, "knight");
+    knight.body.useDamping = true;
+    knight.body.drag.set(0.001, 0.1);
+    knight.body.setMaxVelocityX(100);
 
-    /**the three js camera */
-    const camera = new THREE.PerspectiveCamera(
-      8,
-      width / height,
-      1,
-      depth + 200
-    );
-
-    /**
-     * setup threejs for the tower
-     */
-    const scene = new THREE.Scene();
-    const textureLoader = new THREE.TextureLoader();
-
-    /**construct the tower */
-    let radius = 100;
-    let n = 32;
-    let angle = Math.PI / n;
-    let segmentLength = 2 * radius * Math.sin(angle);
-    let perimeter = (segmentLength + 0.4) * n; //TODO figure out a better way to seamlessly wrap the texture. This assumes the cylinder is like a polygon
-
-    let gmap = textureLoader.load(gradientMap);
-    gmap.minFilter = gmap.magFilter = THREE.NearestFilter;
-
-    const geometry = new THREE.CylinderGeometry(radius, radius, height, n);
-    const material = new THREE.MeshToonMaterial({
-      map: textureLoader.load(brick, function (texture) {
-        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        texture.offset.set(0, 0);
-        texture.repeat.set(perimeter / 64, height / 64);
+    knight.anims.create({
+      key: "run",
+      frames: this.anims.generateFrameNames("knight", {
+        prefix: "knight_",
+        start: 1,
+        end: 8,
+        zeroPad: 2,
       }),
-      normalMap: textureLoader.load(brick_normal, function (texture) {
-        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        texture.offset.set(0, 0);
-        texture.repeat.set(perimeter / 64, height / 64);
-      }),
-      aoMap: textureLoader.load(brick_ao, function (texture) {
-        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        texture.offset.set(0, 0);
-        texture.repeat.set(perimeter / 64, height / 64);
-      }),
-      gradientMap: gmap,
-      dithering: true,
-      color: 0xdddddd,
+      frameRate: 12,
+      repeat: -1,
     });
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.rotation.y = 3.14;
-    scene.add(mesh);
 
-    /**the lighting */
-    var sun = new THREE.DirectionalLight(0xffffff, 1);
-    sun.position.set(0, 1000, 500);
-    scene.add(sun);
-
-    // the webgl renderer that three uses
-    let renderer = new THREE.WebGLRenderer({
-      canvas: this.game.canvas,
-      context: this.game.context,
-      antialias: false,
+    this.keys = this.input.keyboard.addKeys({
+      up: "W",
+      left: "A",
+      down: "S",
+      right: "D",
     });
-    // allows Phaser to draw things to the same canvas that three js uses
-    renderer.autoClear = false;
-
-    /**adds the three js scene to the phaser scene */
-    let extern = this.add.extern();
-    extern.render = function (prenderer, pcamera, pcalcMatrix) {
-      renderer.state.reset();
-
-      renderer.render(scene, camera);
-    };
-    /**
-     * end threejs
-     */
-    this.input.keyboard.on("keydown", () => {
-      //   console.log("hello");
-      mesh.rotation.y += 0.1;
-    });
+    this.knight = knight;
   }
-  update() {}
+  update(time, delta) {
+    const { left, right, up, down } = this.keys;
+    let nextAnim = this.knight.anims.currentAnim;
+    let xacc = 0;
+    if (left.isDown) {
+      xacc -= 150;
+    }
+    if (right.isDown) {
+      xacc += 150;
+    }
+    if (up.isDown) {
+    }
+    if (down.isDown) {
+    }
+    if (xacc !== 0) {
+      if (xacc < 0) {
+        this.knight.setFlipX(true);
+      } else {
+        this.knight.setFlipX(false);
+      }
+      nextAnim = "run";
+    } else {
+      this.knight.anims.stop();
+      this.knight.setFrame("knight_00");
+      nextAnim = null;
+    }
+    this.knight.setAccelerationX(xacc);
+
+    this.knight.anims.timeScale =
+      0.5 +
+      Math.abs(this.knight.body.velocity.x) /
+        (1.5 * this.knight.body.maxVelocity.x);
+
+    nextAnim &&
+      this.knight.play(
+        {
+          key: nextAnim,
+          startFrame: 0,
+        },
+        true
+      );
+  }
 }
